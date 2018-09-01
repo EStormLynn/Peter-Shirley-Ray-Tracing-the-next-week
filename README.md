@@ -38,6 +38,7 @@ public:
     float time() const{ return  _time};
     vec3 A;
     vec3 B;
+    // 光线的时间戳
     float _time;
 
 };
@@ -55,9 +56,11 @@ class camera
     vec3 vertical;
     vec3 lower_left_corner;
     float len_radius;
+    // 增加开始时间和结束时间
     float time0,time1;
 
 public :
+    // 构造函数增加t0，t1
     camera(vec3 lookfrom, vec3 lookat, vec3 vup, float vfov, float aspect, float aperture, float focus_dist,
     float t0,float t1)
     {
@@ -82,17 +85,9 @@ public :
     {
         vec3 rd = len_radius * random_in_unit_disk();
         vec3 offset = u * rd.x() +v*rd.y();
+        // 随机时间戳的光线
         float time = time0 + drand48()*(time1 - time0);
         return ray(origin + offset,lower_left_corner+s*horizontal + t*vertical - origin - offset,time);
-    }
-
-    vec3 random_in_unit_disk()
-    {
-        vec3 p;
-        do{
-            p = 2.0*vec3(drand48(),drand48(),0)-vec3(1,1,0);
-        }while (dot(p,p)>=1.0);
-        return p;
     }
 
 };
@@ -193,7 +188,41 @@ hitable *random_scene() {
 }
 ```
 
+camera类的get_ray函数返回了一条随机时间t在t0和t1之间时间点的光线，这个时间t被用在moving_sphere中，决定了center球心的位置。在循环采样ns的位置，不停的get_ray,不停的和随机时间t位置的球求交，这样就形成了动态模糊的效果。
+
 最后渲染出来达到的效果如下：
 
 
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-08-31%20at%201.50.45%20AM.png" width="400" height="250" alt=""/></div>
+
+## Chapter2:Bounding Volume Hierarchies
+层次包围盒
+第二章，是比较重要的一部分，层次包围盒的出现，可以使我们的代码“跑的更快“，主要是通过重构hitable类，添加rectangles和boxes。
+
+之前写的ray tracing的复杂度是线性的，有多少调光线多少个物体，复杂度是线性相关。我们可能同时发出来几百万的光线，但其实这个过程我们可以通过二分查找的思想来进行。这个过程分为2个关键的部分
+
+* 1）划分空间
+* 2）划分物体对象
+
+关键的思想是使用bounding volume（包围盒），包围盒就是一个普通的立方体，这个立方体将物体完全包裹着。举个简单的例子，现在有10个物体，你用一个bounding sphere将他们包住，如果光线没有射到这个包围球，那么肯定没有射到这10个物体，如果光线射到了包围球，再进行后面的判断，伪代码如下：
+```c++
+if(ray hit bounding object)
+    return whether ray hit bounded objects  // 是否击中包围内部的物体
+else
+    return false    
+```
+
+还有个关键的点是，如何划分物体形成子集。实际上我们不是直接划分屏幕活着volume的，每个物体都有一个bounding volume，而且bounding volume可以重叠。建立一个bounding volume的层级关系。举个例子，我们将物体的总集分为红蓝2个子集，分别用一个bounding volume包围起来，就有了下面的这张图：
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-01%20at%202.40.34%20PM.png" width="400" height="200" alt=""/></div>
+
+红色和蓝色都在紫色的包围盒内，他们发生了重叠，就有了右边的树型结构，红蓝分别是紫的左右孩子，伪代码如下：
+```C++
+if(hit purple) // 紫色
+    hit0 = hits blue enclosed objects
+    hit1 = hits red enclosed objects
+    if(hit0 or hit1)
+        return true and info of closer hit         //返回hit的信息
+else
+    return false
+```

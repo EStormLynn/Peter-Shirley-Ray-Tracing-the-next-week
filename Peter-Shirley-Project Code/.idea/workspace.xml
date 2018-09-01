@@ -25,8 +25,8 @@
       <file leaf-file-name="camera.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/camera.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="57" column="1" lean-forward="false" selection-start-line="57" selection-start-column="1" selection-end-line="57" selection-end-column="1" />
+            <state relative-caret-position="46">
+              <caret line="40" column="13" lean-forward="true" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -35,8 +35,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="32" column="1" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+            <state relative-caret-position="-328">
+              <caret line="94" column="0" lean-forward="true" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -270,12 +270,12 @@
       <workItem from="1534529037069" duration="422000" />
       <workItem from="1534529761773" duration="1370000" />
       <workItem from="1534531321648" duration="4986000" />
-      <workItem from="1535481209218" duration="5006000" />
+      <workItem from="1535481209218" duration="5987000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46873000" />
+    <option name="totallyTimeSpent" value="47854000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -653,14 +653,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/camera.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="57" column="1" lean-forward="false" selection-start-line="57" selection-start-column="1" selection-end-line="57" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ray.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
@@ -682,10 +674,18 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/camera.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="40" column="13" lean-forward="true" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="32" column="1" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+        <state relative-caret-position="-328">
+          <caret line="94" column="0" lean-forward="true" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
