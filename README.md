@@ -226,3 +226,13 @@ if(hit purple) // 紫色
 else
     return false
 ```
+
+为了更好的性能，一个好的bounding volume结构是很有必要的，须要方便划分，有要尽可能少的计算量，axis-aligned bounding boxes（AAABB）包围盒就是一种很好的结构，我们只需要知道是否hit到了物体，不需要知道hit到的点，和法线。
+
+很多人用一种叫“slab”的方法，这是一种基于n个纬度的AABB，就是从n个轴上取n个区间表示。**3<x<5** , x in （3，5）这样表示更加简洁。
+2D的时候，x,y2个区间可以现成一个矩形。
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-01%20at%202.40.34%20PM.png" width="400" height="200" alt=""/></div>
+
+
+如果判断一条光线是否射中一个区间，须要先判断光线是否击中分界线，还是先举个2d的例子，
