@@ -108,14 +108,5 @@ bool moving_sphere::hit(const ray &r, float t_min, float t_max, hit_record &rec)
     return false;
 }
 
-aabb moving_sphere::surrounding_box(aabb &box0, aabb &box1) const {
-    vec3 small(fmin(box0.min().x(), box1.min().x()),
-               fmin(box0.min().y(), box1.min().y()),
-               fmin(box0.min().z(), box1.min().z()));
-    vec3 big(fmax(box0.max().x(), box1.max().x()),
-             fmax(box0.max().y(), box1.max().y()),
-             fmax(box0.max().z(), box1.max().z()));
-    return aabb(small,big);
-}
 
 #endif //PETER_SHIRLEY_PROJECT_CODE_SPHERE_H

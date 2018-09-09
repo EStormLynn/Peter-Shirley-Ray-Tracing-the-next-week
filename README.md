@@ -8,7 +8,7 @@
 
 ## 目录：
 - [x] Chapter1:Motion Blur
-- [ ] Chapter2:Bounding Volume Hierarchies
+- [x] Chapter2:Bounding Volume Hierarchies
 - [ ] Chapter3:Solid Textures
 - [ ] Chapter4:Perlin Noise
 - [ ] Chapter5:Image Texxture Mapping
@@ -232,7 +232,191 @@ else
 很多人用一种叫“slab”的方法，这是一种基于n个纬度的AABB，就是从n个轴上取n个区间表示。**3<x<5** , x in （3，5）这样表示更加简洁。
 2D的时候，x,y2个区间可以现成一个矩形。
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-01%20at%202.40.34%20PM.png" width="400" height="200" alt=""/></div>
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-10%20at%201.44.06%20AM.png" width="400" height="200" alt=""/></div>
 
 
-如果判断一条光线是否射中一个区间，须要先判断光线是否击中分界线，还是先举个2d的例子，
+如果判断一条光线是否射中一个区间，须要先判断光线是否击中分界线。在2d平面内，边界是2条线，而这条ray有2个参数t0和t1，就可以在平面内确定一条光线；如果是在3d空间，边界是2个面，假设为x=x0和x=x1（这是x方向上的2个面），对于时刻t，有个关于p(t)的函数
+
+    p(t)= A + tB
+
+这个公式是适用与xyz三个坐标系，比如
+
+    x(t) = Ax + t*Bx
+
+当t0时刻，射线击中平面的位置 x=x0 ,即
+
+    x0 = Ax +t0*Bx
+
+求出来
+
+    t0 = (x0 - Ax) / Bx
+
+同理
+    
+    t1 = (x1 - Ax) / Bx  (当x = x1时
+
+刚才聚的例子是1纬空间的，xy分开计算，但是要知道2纬空间，是否击中物体，就要计算，x空间和y空间击中的物体是否发生**重叠**，就想下图中蓝色和绿色表示x，y空间击中物体的2个平面，4个平面重叠的部分。
+
+伪代码如下：
+```C++
+    compute(tx0,tx1);
+    compute(ty0,ty1);
+    return overlap?((tx0,tx1),(ty0,ty1))
+```
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-10%20at%2012.45.42%20AM.png" width="400" height="200" alt=""/></div>
+
+三维的时候就再加上z空间的判断。
+
+注意事项：
+* 对于求解出来的tx0和tx1，构成的区间可能是(7,3)这样的形式，那么就须要对tx0和tx1做下翻转，转成(3,7)
+
+    tx0 = min((x0 - Ax)/Bx,(x1 - Ax)/Bx);
+    tx1 = max((x0 - Ax)/Bx,(x1 - Ax)/Bx);
+
+* 如果除数是0，既Bx=0，或者分子是0，既(x0-Ax)=0或(x1-Ax)=0那么求解出来的答案，求出来可能无意义，分子是0，表示只有一个解，等于光线是擦边，不好界定是射中了还是没有射中。
+
+对于bvh在判断重叠的方法，在一维平面内原理就是比较2个区间，看2个区间是否重叠，比如区间(d,D)和区间(e,E)，计算出来的重叠区间为(f,F)，如果满足
+```C++
+bool overlap(d,D,e,E,f,F)
+{
+    f = max(d,e);
+    F = min(D,e);
+    return f<F;
+}
+```
+我自己总结了下就是 **左大右小**(左区间区max，右区间取min，比较2个值，如果左<右，为真)发生重叠。
+
+```C++
+
+class aabb
+{
+public:
+    aabb(){}
+    aabb(const vec3 a,const vec3 &b)
+    {
+        _min = a;_max = b;
+    }
+
+    vec3 min()const{ return  _min};
+    vec3 max()const{ return  _max};
+
+    bool hit(const ray& r,float tmin,float tmax)const
+    {
+        for(int a =0;a<3;a++)
+        {
+            float invD = 1.0f/r.direction()[a];
+            float t0 = (min()[a] - r.direction()[a]) * invD;
+            float t1 = (max()[a] - r.direction()[a]) * invD;
+
+            if(invD<0.0f)
+                std::swap(t0,t1);
+            tmin = t0>tmin?t0:tmin;
+            tmax = t1<tmax?t1:tmax;
+            if(tmax <= tmin)
+                return false;
+        }
+        return true;
+    }
+    vec3 _min;
+    vec3 _max;
+};
+```
+
+对于hitable的类，须要加一个bounding_box的虚函数，方便派生类实现
+```C++
+class hitable
+{
+public:
+    virtual bool hit(const ray& r,float t_min,float t_max,hit_record & rec)const =0;
+    virtual bool bounding_box(float t0,float t1,aabb & box)const =0;
+};
+```
+
+之前写的球类实现bounding_box的函数,球的boundingbox很简单，就是球心加半径。
+```C++
+bool sphere::bounding_box(float t0, float t1, aabb &box) const {
+    box = aabb(center - vec3(radius, radius, radius), center + vec3(radius, radius, radius));
+    return true;
+}
+```
+
+对于动态运动的球，对t0时刻的box和t1时刻的box，取一个更大的boundingbox
+```C++
+aabb moving_sphere::surrounding_box(aabb &box0, aabb &box1) const {
+    vec3 small(fmin(box0.min().x(), box1.min().x()),
+               fmin(box0.min().y(), box1.min().y()),
+               fmin(box0.min().z(), box1.min().z()));
+    vec3 big(fmax(box0.max().x(), box1.max().x()),
+             fmax(box0.max().y(), box1.max().y()),
+             fmax(box0.max().z(), box1.max().z()));
+    return aabb(small,big);
+}
+```
+
+hitable类也要加点东西，因为BVH涉及左右子树，所以以链表的形式，添加左右子树。
+```C++
+class bvh_node:public hitable
+{
+public:
+    bvh_node(){}
+    bvh_node(hitable **l,int n,float time0,float time1);
+    virtual bool hit(const ray&r,float tmin,float tmax,hit_record &rec)const;
+    virtual bool bounding_box(float t0,float t1,aabb &box) const;
+
+    hitable *left;
+    hitable *right;
+    aabb box;
+};
+```
+
+对于左右子树进行递归操作，直到射到叶子节点，击中重叠的部分，击中的数据用引用rec传出去。
+```C++
+
+bool bvh_node::hit(const ray &r, float tmin, float tmax, hit_record &rec) const {
+    if(box.hit(r,tmin,tmax))
+    {
+        hit_record left_rec,right_rec;
+        bool hit_left = left->hit(r,tmin,tmax,left_rec);
+        bool hit_right = right->hit(r,tmin,tmax,right_rec);
+        if(hit_left && hit_right)           // 击中重叠部分
+        {
+            if(left_rec.t<right_rec.t)
+                rec = left_rec;             // 击中左子树
+            else
+                rec = right_rec;            // 击中右子树
+            return true;
+        } else if(hit_left)
+        {
+            rec = left_rec;
+            return  true;
+        } else if(hit_right)
+        {
+            rec = right_rec;
+            return true;
+        } else
+            return false;
+    } else
+        return false;                       // 未击中任何物体
+}
+```
+
+这种bvh的结构，bvh_node节点记录了击中子类的record信息，而且是一种二分的结构。如果bounding box划分的合理是很高效的，最完美的是满二叉树的情况。
+boundingbox的hitrecord的数据，使用qsort函数重写compare函数来进行排序。
+
+```C++
+int box_x_compare(const void *a,const void *b)
+{
+    aabb box_left,box_right;
+    hitable *ah = *(hitable**)a;
+    hitable *bh = *(hitable**)b;
+    if(!ah->bounding_box(0,0,box_left) || !bh->bounding_box(0,0,box_right))
+        std::cerr <<"No bounding box in bvh_node constructor\n";
+    if(box_left.min().x() - box_right.min().x()<0.0)
+        return  -1;
+    else
+        return 1;
+}
+```
+
+# Chapter3:Solid Textures
