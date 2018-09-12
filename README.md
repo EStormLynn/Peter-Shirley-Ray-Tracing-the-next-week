@@ -26,6 +26,7 @@
 
 
 ```c++
+// 增加时间信息
 class ray
 {
 public:
@@ -278,6 +279,7 @@ else
 
 对于bvh在判断重叠的方法，在一维平面内原理就是比较2个区间，看2个区间是否重叠，比如区间(d,D)和区间(e,E)，计算出来的重叠区间为(f,F)，如果满足
 ```C++
+// 计算是否重叠
 bool overlap(d,D,e,E,f,F)
 {
     f = max(d,e);
@@ -288,7 +290,7 @@ bool overlap(d,D,e,E,f,F)
 我自己总结了下就是 **左大右小**(左区间区max，右区间取min，比较2个值，如果左<右，为真)发生重叠。
 
 ```C++
-
+// aabb包围盒
 class aabb
 {
 public:
@@ -492,5 +494,4 @@ public:
 最后得到的图案就是把底部大球的纹理，改成了棋盘纹理，效果如下：
 
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-13%20at%202.53.23%20AM.png" width="400" height="25
-    0" alt=""/></div>
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-13%20at%202.53.23%20AM.png" width="400" height="250" alt=""/></div>
