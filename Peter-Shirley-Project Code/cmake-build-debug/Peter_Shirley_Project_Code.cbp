@@ -109,6 +109,9 @@
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/sphere.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/texture.h">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/vec3.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>

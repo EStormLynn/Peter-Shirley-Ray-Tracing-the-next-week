@@ -9,7 +9,7 @@
 ## 目录：
 - [x] Chapter1:Motion Blur
 - [x] Chapter2:Bounding Volume Hierarchies
-- [ ] Chapter3:Solid Textures
+- [x] Chapter3:Solid Textures
 - [ ] Chapter4:Perlin Noise
 - [ ] Chapter5:Image Texxture Mapping
 - [ ] Chapter6:Rectangles and Lights
@@ -420,3 +420,77 @@ int box_x_compare(const void *a,const void *b)
 ```
 
 # Chapter3:Solid Textures
+固体纹理。纹理在图形学中表示为一个面片上有关联的不同的颜色，这里须要完善一个texture的类，表现物体表面的纹理。
+```C++
+
+class texture {
+public:
+    virtual vec3 value(float u, float v, const vec3 &p) const = 0;
+};
+
+class constant_texture : public texture {
+public:
+    constant_texture() {}
+
+    constant_texture(vec3 c) : color(c) {}
+
+    virtual vec3 value(float u, float v, const vec3 &p) const {
+        return color;
+    }
+
+    vec3 color;
+};
+```
+
+这样就可以使用texture类，通过uv采样纹理颜色的方法，替换之前写的vec3 的color。比如把之前的lambertain材质重写，使用新的texture来表现颜色。
+```C++
+
+class lambertian : public material {
+public:
+    lambertian(texture *a) : albedo(a) {}
+    virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const  {
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+        scattered = ray(rec.p, target-rec.p);
+        attenuation = albedo->value(0,0,rec.p);
+        return true;
+    }
+
+    texture *albedo;    
+};
+```
+
+新建一个lambertain材质，同时新建一个checker_texture(棋盘纹理)，
+
+```c++
+
+// 棋盘纹理
+class checker_texture:public texture
+{
+public:
+    checker_texture(){}
+    checker_texture(texture *t0,texture *t1):even(t0),odd(t1){}
+    virtual vec3 value (float u,float v, const vec3 &p)const {
+        float sines = sin(10*p.x())*sin(10*p.y())*sin(10*p.z());
+        if(sines<0)
+            return odd->value(u,v,p);
+        else
+            return  even->value(u,v,p);
+    }
+    // 棋盘纹理的间隔颜色
+    texture *odd;
+    texture *even;
+};
+```
+
+更新main函数中的vec3的color，使用新的texture纹理，注意lambertain材质的构造函数改成 texture的指针了，之前是一个v3的对象。
+```C++
+      // 棋盘纹理
+    texture *checker = new checker_texture(new constant_texture(vec3(0.2, 0.3, 0.1)),
+                                           new constant_texture(vec3(0.9, 0.9, 0.9)));
+    list[0] = new sphere(vec3(0, -700, 0), 700, new lambertian(checker));
+```
+最后得到的图案就是把底部大球的纹理，改成了棋盘纹理，效果如下：
+
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-13%20at%202.53.23%20AM.png" width="400" height="25
+    0" alt=""/></div>

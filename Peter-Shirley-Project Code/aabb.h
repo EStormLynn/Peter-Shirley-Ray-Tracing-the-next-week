@@ -27,8 +27,8 @@ public:
         _min = a;_max = b;
     }
 
-    vec3 min()const{ return  _min};
-    vec3 max()const{ return  _max};
+    vec3 min()const{ return  _min;}
+    vec3 max()const{ return  _max;}
 
     bool hit(const ray& r,float tmin,float tmax)const
     {

@@ -10,6 +10,7 @@ struct hit_record;
 
 #include "ray.h"
 #include "hitable.h"
+#include "texture.h"
 
 
 float schlick(float cosine, float ref_idx) {
@@ -55,15 +56,15 @@ public:
 
 class lambertian : public material {
 public:
-    lambertian(const vec3& a) : albedo(a) {}
+    lambertian(texture *a) : albedo(a) {}
     virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const  {
         vec3 target = rec.p + rec.normal + random_in_unit_sphere();
         scattered = ray(rec.p, target-rec.p);
-        attenuation = albedo;
+        attenuation = albedo->value(0,0,rec.p);
         return true;
     }
 
-    vec3 albedo;    // 反射率
+    texture *albedo;
 };
 
 class metal : public material {
