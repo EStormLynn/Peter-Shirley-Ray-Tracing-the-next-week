@@ -4,7 +4,7 @@
 
 
 [英文原著地址](https://pan.baidu.com/s/1b5CvAdElCcXAO2R4lNFgkA)  密码: urji
-
+因为机器计算能力问题，代码渲染的图片分辨率较小，放在The-Next-Week文件夹下，图片使用的是原书的图片。
 
 ## 目录：
 - [x] Chapter1:Motion Blur
@@ -459,7 +459,7 @@ public:
 };
 ```
 
-新建一个lambertain材质，同时新建一个checker_texture(棋盘纹理)，
+新建一个lambertain材质，同时新建一个checker_texture(棋盘纹理)，继承普通的纹理，不过包含2个指针分别指向棋盘的间隔颜色。
 
 ```c++
 
