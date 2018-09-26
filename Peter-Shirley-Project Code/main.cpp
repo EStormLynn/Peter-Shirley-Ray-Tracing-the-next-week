@@ -71,6 +71,14 @@ hitable *random_scene() {
     return new hitable_list(list, i);
 }
 
+hitable *two_perlin_spheres()
+{
+    texture *pertext = new noise_texture();
+    hitable **list = new hitable*[2];
+    list[0] = new sphere(vec3(0,-1000,0),1000,new lambertian(pertext));
+    list[1] = new sphere(vec3(0,2,0),2,new lambertian(pertext));
+    return new hitable_list(list,2);
+}
 
 int main() {
     string str = "";
@@ -88,15 +96,10 @@ int main() {
     camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
 
 
-    hitable *list[5];
-    // 球1,2,3,4; 2个lambertian ，2个metal
-    list[0] = new sphere(vec3(0, 0, -1), 0.5, new lambertian(new constant_texture(vec3(0.8, 0.3, 0.3))));
-    list[1] = new sphere(vec3(0, -100.5, -1), 100, new lambertian(new constant_texture(vec3(0.8, 0.8, 0.0))));
-    list[2] = new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.0));
-    list[3] = new sphere(vec3(-1, 0, -1), 0.5, new dielectric(1.5));
-    list[4] = new sphere(vec3(-1, 0, -1), -0.45, new dielectric(1.5));
-    hitable *world = new hitable_list(list, 5);
-    world = random_scene();
+
+    hitable *world ;
+//    world = random_scene();
+    world = two_perlin_spheres();
 
     random_device rd;
 

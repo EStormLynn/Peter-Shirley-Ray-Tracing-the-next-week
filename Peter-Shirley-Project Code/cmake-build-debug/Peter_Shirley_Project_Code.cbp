@@ -103,6 +103,9 @@
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/material.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/perlin.h">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/ray.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>

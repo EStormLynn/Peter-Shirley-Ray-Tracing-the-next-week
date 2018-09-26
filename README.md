@@ -1,17 +1,20 @@
-# Peter Shirley-Ray Tracing the next week(2016)
+# Peter Shirley-Ray Tracing The Next Week(2016)
 
 原著：Peter Shirley
 
 
 [英文原著地址](https://pan.baidu.com/s/1b5CvAdElCcXAO2R4lNFgkA)  密码: urji
+
+第二本书主要介绍了运动模糊，BVH（层次包围盒），纹理贴图，柏林噪声等
+
 因为机器计算能力问题，代码渲染的图片分辨率较小，放在The-Next-Week文件夹下，图片使用的是原书的图片。
 
 ## 目录：
 - [x] Chapter1:Motion Blur
 - [x] Chapter2:Bounding Volume Hierarchies
 - [x] Chapter3:Solid Textures
-- [ ] Chapter4:Perlin Noise
-- [ ] Chapter5:Image Texxture Mapping
+- [x] Chapter4:Perlin Noise
+- [ ] Chapter5:Image Texture Mapping
 - [ ] Chapter6:Rectangles and Lights
 - [ ] Chapter7:Instances
 - [ ] Chapter8:Volumes
@@ -495,3 +498,150 @@ public:
 
 
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-13%20at%202.53.23%20AM.png" width="400" height="250" alt=""/></div>
+
+## Chapter4:Perlin Noise
+Perlin噪声 ( Perlin noise )指由Ken Perlin发明的自然噪声生成算法 。
+
+柏林噪声有2个关键的部分，第一是输入相同的3D点，总能返回相同的随机值，第二是使用一些hack的方法，达到快速近似的效果。
+
+noise函数，通过传入一个三维空间的点，返回一个float类型的噪声值。
+
+```c++
+
+#include "vec3.h"
+
+class perlin {
+public:
+    float noise(const vec3 &p) const {
+        float u = p.x() - floor(p.x());
+        float v = p.y() - floor((p.y()));
+        float z = p.z() - floor(p.z());
+        int i = int(4 * p.x()) & 255;
+        int j = int(4 * p.y()) & 255;
+        int k = int(4 * p.z()) & 255;
+        return ranfloat[perm_x[i] ^ perm_y[j] ^ perm_z[k]];
+    }
+
+    static float *ranfloat;
+    static int *perm_x;
+    static int *perm_y;
+    static int *perm_z;
+};
+
+static float *perlin_generate() {
+    float *p = new float[256];
+    for (int i = 0; i < 256; i++) {
+        p[i] = drand48();
+    }
+    return p;
+}
+
+// 改变序列函数
+void permute(int *p, int n) {
+    for (int i = n - 1; i > 0; i--) {
+        int target = int(drand48() * (i + 1));
+        int tmp = p[i];
+        p[i] = p[target];
+        p[target] = tmp;
+    }
+}
+
+static int *perlin_generate_perm() {
+    int *p = new int[256];
+    for (int i = 0; i < 256; i++) {
+        p[i] = i;
+    }
+    permute(p, 256);
+    return p;
+}
+
+
+float *perlin::ranfloat = perlin_generate();
+int *perlin::perm_x = perlin_generate_perm();
+int *perlin::perm_y = perlin_generate_perm();
+int *perlin::perm_z = perlin_generate_perm();
+```
+
+在texture头文件中，添加生成噪声纹理的代码，通过在0-1之间选取float，创建噪声纹理
+```c++
+// 噪声纹理
+class noise_texture:public texture{
+public:
+    noise_texture(){}
+    noise_texture(float sc):scale(sc){}
+    virtual vec3 value(float u,float v,const vec3& p)const
+    {
+        return vec3(1,1,1)*0.5*(1+sin(scale*p.x())+ 5*noise.noise(p));
+    }
+    perlin noise;
+    float scale;
+};
+```
+
+在lambertian的球上应用噪声纹理
+```C++
+hitable *two_perlin_spheres()
+{
+    texture *pertext = new noise_texture();
+    hitable **list = new hitable*[2];
+    list[0] = new sphere(vec3(0,-1000,0),1000,new lambertian(pertext));
+    list[1] = new sphere(vec3(0,2,0),2,new lambertian(pertext));
+    return new hitable_list(list,2);
+}
+```
+
+得到的效果如下
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-27%20at%201.23.55%20AM.png" width="400" height="250" alt=""/></div>
+
+再使纹理变得平滑一些，使用线性插值的方法：
+```c++
+inline float trilinear_interp(float cp[2][2][2], float u, float v, float w) {
+    float accum = 0;
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; ++j) {
+            for (int k = 0; k < 2; ++k) {
+                accum += (i * u + (1 - i) * (1 - u)) * (j * v + (1 - j) * (1 - v)) * (k * w + (1 - k) * (1 - w)) *
+                         cp[i][j][k];
+            }
+        }
+    }
+    return accum;
+}
+```
+
+效果如下：
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-27%20at%201.24.06%20AM.png" width="400" height="250" alt=""/></div>
+
+为了达到更好的平滑效果，使用**hermite cubic**方法去做平滑。
+
+```c++
+    float noise(const vec3 &p) const {
+        float u = p.x() - floor(p.x());
+        float v = p.y() - floor((p.y()));
+        float w = p.z() - floor(p.z());
+        // hermite cubic 方法平滑
+        u = u*u*(3-2*u);
+        v = v*v*(3-2*v);
+        w = w*w*(3-2*w);
+        int i = floor(p.x());
+        int j = floor(p.y());
+        int k = floor(p.z());
+```
+
+效果如下：
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-27%20at%201.34.01%20AM.png" width="400" height="250" alt=""/></div>
+
+
+```c++
+class noise_texture:public texture{
+public:
+    noise_texture(){}
+    noise_texture(float sc):scale(sc){}
+    virtual vec3 value(float u,float v,const vec3& p)const
+    {
+        return vec3(1,1,1)*noise.noise(scale * p);
+    }
+    perlin noise;
+    float scale;
+};
+```

@@ -7,6 +7,7 @@ CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../hitable.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../hitable_list.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../main.cpp
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../material.h
+CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../perlin.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../ray.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../sphere.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../texture.h
