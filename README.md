@@ -629,8 +629,9 @@ inline float trilinear_interp(float cp[2][2][2], float u, float v, float w) {
 ```
 
 效果如下：
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-27%20at%201.34.01%20AM.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-233120.png" width="400" height="250" alt=""/></div>
 
+同时缩放输入的点p来使噪声变化的更快。
 
 ```c++
 class noise_texture:public texture{
@@ -645,3 +646,72 @@ public:
     float scale;
 };
 ```
+
+得到的效果如下：
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-233135.png" width="400" height="250" alt=""/></div>
+
+现在仍然能看到网格，因为这种模式下，max和min总是收到具体的xyz值影响，然后Ken就用了一个trick，使用随机的vectors替代原来的floats，通过点乘的方法改变格子上的max和min值。
+
+```c++
+// perlin 插值
+inline float perlin_interp(vec3 c[2][2][2],float u,float v, float w)
+{
+    float uu =u*u*(3-2*u);
+    float vv = v*v*(3-2*v);
+    float ww = w*w*(3-2*w);
+    float accum = 0;
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            for (int k = 0; k < 2; ++k) {
+                vec3 weight_v(u-i,v-j,w-k);
+                accum += (i*uu + (1-i)*(1-uu))*
+                        (j*vv +(1-j)*(1-vv))*
+                        (k*ww +(1-k)*(1-ww))*dot(c[i][j][k],weight_v);
+            }
+
+        }
+    }
+
+    return accum;
+}
+```
+
+再添加turb扰动的噪声，达到更加自然的效果
+```c++
+    // 噪声扰动
+    float turb(const vec3& p, int depth=7) const {
+        float accum = 0;
+        vec3 temp_p = p;
+        float weight = 1.0;
+        for (int i = 0; i < depth; i++) {
+            accum += weight*noise(temp_p);
+            weight *= 0.5;
+            temp_p *= 2;
+        }
+        return fabs(accum);
+    }
+```
+
+并在texture的noise纹理中应用
+```c++
+// 噪声纹理
+class noise_texture:public texture{
+public:
+    noise_texture(){}
+    noise_texture(float sc):scale(sc){}
+    virtual vec3 value(float u,float v,const vec3& p)const
+    {
+        // 加缩放和扰动后
+        return vec3(1,1,1)*0.5*(1 + sin(scale*p.x() + 5*noise.turb(scale*p))) ;
+    }
+    perlin noise;
+    float scale;
+};
+```
+
+最终达到的效果如下
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-232915.png" width="400" height="250" alt=""/></div>
+
+## Chapter5:Image Texture Mapping
