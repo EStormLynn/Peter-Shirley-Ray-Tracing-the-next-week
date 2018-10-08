@@ -715,3 +715,70 @@ public:
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-232915.png" width="400" height="250" alt=""/></div>
 
 ## Chapter5:Image Texture Mapping
+纹理映射，通过读取一张图片，使用uv映射的方法，直接将一张图片的纹理绘制在物体表面。
+
+直接的方法是缩放uv，uv是[0,1]之间的float。而像素肯定大于这个区间，所以需要进行缩放，用(i,j)表示当前像素，nx和ny表示纹理的分辨率，所以对于任意像素(i,j)位置，对应的uv坐标就是
+
+    u = i / (nx - 1)
+    v = j / (ny - 1)
+
+这种是对于平面坐标的uv映射，如果是一个球体的话，使用极坐标可以更方便的表示映射关系
+
+    u = phi / (2*Pi)
+    v = theta / Pi
+
+通过hitpoint的xyz，可以计算出theta 和phi，对于单位球体，他们之间的关系如下
+
+    x = cos(phi)cos(theta)
+    y = sin(phi)cos(theta)
+    z = sin(theta)
+
+然后math.h中提供了atan2()方法，可以计算反三角函数
+
+    phi = atan2(y,x)
+
+atan2返回的值是在(-Pi,Pi)之间的
+
+    theta = asin(z)
+
+theta值在(-Pi/2,Pi/2)之间。
+
+最终就在hit 文件中写了一个获取球体uv的函数
+```c++
+
+
+
+```
+
+以及使用stb_image从图片读取rgb的头文件
+```c++
+
+class image_texture : public texture {
+public:
+    image_texture() {}
+    image_texture(unsigned char *pixels, int A, int B) : data(pixels), nx(A), ny(B) {}
+    virtual vec3 value(float u, float v, const vec3& p) const;
+    unsigned char *data;
+    int nx, ny;
+};
+
+vec3 image_texture::value(float u, float v, const vec3& p) const {
+    int i = (1- u)*nx;
+    int j = (1-v)*ny-0.001;
+    if (i < 0) i = 0;
+    if (j < 0) j = 0;
+    if (i > nx-1) i = nx-1;
+    if (j > ny-1) j = ny-1;
+    float r = int(data[3*i + 3*nx*j]  ) / 255.0;
+    float g = int(data[3*i + 3*nx*j+1]) / 255.0;
+    float b = int(data[3*i + 3*nx*j+2]) / 255.0;
+    return vec3(r, g, b);
+}
+```
+
+须要注意main函数中
+```c++
+// 须要先声明宏，不然stb_image 会报错找不到图片格式
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+```

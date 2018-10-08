@@ -10,6 +10,9 @@ CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../material.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../perlin.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../ray.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../sphere.h
+CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../stb_image.h
+CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../stb_image_write.h
+CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../surface_texture.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../texture.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../vec3.h
 

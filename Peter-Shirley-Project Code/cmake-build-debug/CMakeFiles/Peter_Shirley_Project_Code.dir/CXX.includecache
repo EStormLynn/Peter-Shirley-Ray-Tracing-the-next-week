@@ -43,6 +43,12 @@ random
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/random
 material.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/material.h
+surface_texture.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/surface_texture.h
+stb_image.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image.h
+stb_image_write.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image_write.h
 
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/material.h
 ray.h
@@ -63,6 +69,52 @@ vec3.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/sphere.h
 hitable.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable.h
+
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image.h
+stb_image.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image.h
+stdio.h
+-
+stdarg.h
+-
+stddef.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+stdio.h
+-
+assert.h
+-
+stdint.h
+-
+emmintrin.h
+-
+intrin.h
+-
+arm_neon.h
+-
+
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image_write.h
+stdarg.h
+-
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+math.h
+-
+assert.h
+-
+
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/surface_texture.h
+texture.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/texture.h
 
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/texture.h
 vec3.h

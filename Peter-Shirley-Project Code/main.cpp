@@ -6,6 +6,13 @@
 #include "camera.h"
 #include "random"
 #include "material.h"
+#include "surface_texture.h"
+// 须要先声明宏，不然stb_image 会报错找不到图片格式
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "stb_image.h"
+#include "stb_image_write.h"
+
 
 #define random(a, b) (rand()%(b-a+1)+a)
 
@@ -71,12 +78,20 @@ hitable *random_scene() {
     return new hitable_list(list, i);
 }
 
+hitable *earth() {
+    int nx, ny, nn;
+    unsigned char *tex_data = stbi_load("picture.png", &nx, &ny, &nn, 0);
+    material *mat =  new lambertian(new image_texture(tex_data, nx, ny));
+    return new sphere(vec3(0,2, 0), 2, mat);
+}
+
 hitable *two_perlin_spheres()
 {
     texture *pertext = new noise_texture();
     hitable **list = new hitable*[2];
     list[0] = new sphere(vec3(0,-1000,0),1000,new lambertian(pertext));
-    list[1] = new sphere(vec3(0,2,0),2,new lambertian(pertext));
+//    list[1] = new sphere(vec3(0,2,0),2,new lambertian(pertext));
+    list[1] = earth();
     return new hitable_list(list,2);
 }
 

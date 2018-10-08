@@ -89,6 +89,9 @@
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/camera.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/cmake-build-debug/picture.png">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
@@ -108,6 +111,15 @@
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/sphere.h">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image.h">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image_write.h">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/surface_texture.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/texture.h">
