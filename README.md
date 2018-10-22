@@ -14,8 +14,8 @@
 - [x] Chapter2:Bounding Volume Hierarchies
 - [x] Chapter3:Solid Textures
 - [x] Chapter4:Perlin Noise
-- [ ] Chapter5:Image Texture Mapping
-- [ ] Chapter6:Rectangles and Lights
+- [x] Chapter5:Image Texture Mapping
+- [x] Chapter6:Rectangles and Lights
 - [ ] Chapter7:Instances
 - [ ] Chapter8:Volumes
 - [ ] Chapter9:A Scene Test All New Features
@@ -782,3 +782,264 @@ vec3 image_texture::value(float u, float v, const vec3& p) const {
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 ```
+
+## Chapter6:Rectangles and Lights
+矩形和光照。如何做一个自发光的材质，首先须要在hit_record里面加一个 emitted的方法。比如说背景如果是纯黑的话，就相当于光线来了的时候，他不反射任何光线。
+```c++
+// 自发光材质
+class diffuse_light:public material
+{
+public:
+    diffuse_light(texture *a):emit(a){}
+    virtual bool scatter(const ray& r_in,const hit_record &rec,vec3 & attenuation,ray& scattered)const {
+        return false;
+    }
+    virtual vec3 emitted(float u,float v,const vec3 &p)const {
+        return emit->value(u,v,p);
+    }
+    texture *emit;
+};
+```
+
+材质类须要加个emitted的虚函数，默认return的是黑色。方便子类重写
+```c++
+class material  {
+public:
+    // 散射虚函数
+    // 参数：r_in 入射的光线， rec hit的记录， attenuation v3的衰减，scattered 散射后的光线
+    virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const = 0;
+    // 非自发光材质，默认返回黑色
+    virtual vec3 emitted(float u,float v,const vec3 &p)const {
+        return vec3(0,0,0);
+};
+```
+
+接下来写一个rect的类，用来表示空间中的矩形。
+
+以xy平面为例，在z=k的情况下，用2条直线，满足x=x0,x=x1,y=y0,y=y1可以得到一个区域。
+
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.54.25%20PM.png" width="400" height="250" alt=""/></div>
+
+
+当判断ray是否击中这个rectangle的时候，ray的表达式为：
+
+    p(t) = a + t*b
+
+在xy平面上，等价于：
+
+    z(t) = az + t*bz
+
+解这个关于t的方程，当z=k的时候
+
+    t = (k - az) / bz
+
+在知道t之后，
+
+    x = ax + t * bx
+    y = ay + t * by
+
+如果满足 x在区间[x0,x1]，y在[y0,y1]上的话，ray就击中了这个rect。
+
+代码如下：
+
+```c++
+// xy平面的矩形
+class xy_rect: public hitable  {
+public:
+    xy_rect() {}
+    xy_rect(float _x0, float _x1, float _y0, float _y1, float _k, material *mat) : x0(_x0), x1(_x1), y0(_y0), y1(_y1), k(_k), mp(mat) {};
+    virtual bool hit(const ray& r, float t0, float t1, hit_record& rec) const;
+    virtual bool bounding_box(float t0, float t1, aabb& box) const {
+        box =  aabb(vec3(x0,y0, k-0.0001), vec3(x1, y1, k+0.0001));
+        return true; }
+    material  *mp;
+    float x0, x1, y0, y1, k;
+};
+```
+
+具体实现如下：
+```c++
+// 是否击中，形参传了hit_record的引用。
+bool xy_rect::hit(const ray& r, float t0, float t1, hit_record& rec) const {
+    float t = (k-r.origin().z()) / r.direction().z();
+    if (t < t0 || t > t1)
+        return false;
+    float x = r.origin().x() + t*r.direction().x();
+    float y = r.origin().y() + t*r.direction().y();
+    if (x < x0 || x > x1 || y < y0 || y > y1)
+        return false;
+    rec.u = (x-x0)/(x1-x0);
+    rec.v = (y-y0)/(y1-y0);
+    rec.t = t;
+    rec.mat_ptr = mp;
+    rec.p = r.point_at_parameter(t);
+    rec.normal = vec3(0, 0, 1);
+    return true;
+}
+```
+
+在场景中放个rect做为光源
+```c++
+// 带rect和光源的场景
+hitable *simple_light()
+{
+    texture *pertext = new noise_texture(4);
+    texture *checker = new checker_texture(new constant_texture(vec3(0.2, 0.3, 0.1)),
+                                           new constant_texture(vec3(0.9, 0.9, 0.9)));
+    hitable **list = new hitable*[4];
+    list[0] = new sphere(vec3(0,-700,0),700,new lambertian(checker));
+    list[1] = new sphere(vec3(0,2,0),2,new lambertian(pertext));
+    list[2] = new sphere(vec3(0,7,0),2,new diffuse_light(new constant_texture(vec3(4,4,4))));
+    list[3] = new xy_rect(3,5,1,3,-2,new diffuse_light(new constant_texture(vec3(4,4,4))));
+    return new hitable_list(list,4);
+}
+```
+
+得到如下的图片
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.37.40%20PM.png" width="400" height="200" alt=""/></div>
+
+接下来补全yz平面和xz平面的代码
+```c++
+class xz_rect: public hitable  {
+public:
+    xz_rect() {}
+    xz_rect(float _x0, float _x1, float _z0, float _z1, float _k, material *mat) : x0(_x0), x1(_x1), z0(_z0), z1(_z1), k(_k), mp(mat) {};
+    virtual bool hit(const ray& r, float t0, float t1, hit_record& rec) const;
+    virtual bool bounding_box(float t0, float t1, aabb& box) const {
+        box =  aabb(vec3(x0,k-0.0001,z0), vec3(x1, k+0.0001, z1));
+        return true; }
+    material  *mp;
+    float x0, x1, z0, z1, k;
+};
+
+class yz_rect: public hitable  {
+public:
+    yz_rect() {}
+    yz_rect(float _y0, float _y1, float _z0, float _z1, float _k, material *mat) : y0(_y0), y1(_y1), z0(_z0), z1(_z1), k(_k), mp(mat) {};
+    virtual bool hit(const ray& r, float t0, float t1, hit_record& rec) const;
+    virtual bool bounding_box(float t0, float t1, aabb& box) const {
+        box =  aabb(vec3(k-0.0001, y0, z0), vec3(k+0.0001, y1, z1));
+        return true; }
+    material  *mp;
+    float y0, y1, z0, z1, k;
+};
+```
+
+hit方法：
+
+```c++
+
+bool xz_rect::hit(const ray& r, float t0, float t1, hit_record& rec) const {
+    float t = (k-r.origin().y()) / r.direction().y();
+    if (t < t0 || t > t1)
+        return false;
+    float x = r.origin().x() + t*r.direction().x();
+    float z = r.origin().z() + t*r.direction().z();
+    if (x < x0 || x > x1 || z < z0 || z > z1)
+        return false;
+    rec.u = (x-x0)/(x1-x0);
+    rec.v = (z-z0)/(z1-z0);
+    rec.t = t;
+    rec.mat_ptr = mp;
+    rec.p = r.point_at_parameter(t);
+    rec.normal = vec3(0, 1, 0);
+    return true;
+}
+
+bool yz_rect::hit(const ray& r, float t0, float t1, hit_record& rec) const {
+    float t = (k-r.origin().x()) / r.direction().x();
+    if (t < t0 || t > t1)
+        return false;
+    float y = r.origin().y() + t*r.direction().y();
+    float z = r.origin().z() + t*r.direction().z();
+    if (y < y0 || y > y1 || z < z0 || z > z1)
+        return false;
+    rec.u = (y-y0)/(y1-y0);
+    rec.v = (z-z0)/(z1-z0);
+    rec.t = t;
+    rec.mat_ptr = mp;
+    rec.p = r.point_at_parameter(t);
+    rec.normal = vec3(1, 0, 0);
+    return true;
+}
+```
+
+再在场景中放5个墙，一个灯，做个经典的cornell box。
+```c++
+// cornell_box经典场景
+hitable *cornell_box() {
+    hitable **list = new hitable*[8];
+    int i = 0;
+    material *red = new lambertian( new constant_texture(vec3(0.65, 0.05, 0.05)) );
+    material *white = new lambertian( new constant_texture(vec3(0.73, 0.73, 0.73)) );
+    material *green = new lambertian( new constant_texture(vec3(0.12, 0.45, 0.15)) );
+    material *light = new diffuse_light( new constant_texture(vec3(15, 15, 15)) );
+    list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
+    list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
+    list[i++] = new xz_rect(213, 343, 227, 332, 554, light);
+    list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
+    list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
+    list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
+    return new hitable_list(list,i);
+}
+```
+
+camera的参数做一些调整
+```C++
+    vec3 lookfrom(278,278,-800);
+    vec3 lookat(278, 278, 0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.1;
+    float vfov = 40.0;
+    camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
+```
+
+会发现渲染出来的有几个面是黑色的，是因为法向量的问题。
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.48.34%20PM.png" width="250" height="250" alt=""/></div>
+
+
+须要翻转法向量
+```c++
+// 翻转法向量
+class flip_normals : public hitable {
+public:
+    flip_normals(hitable *p) : ptr(p) {}
+    virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
+        if (ptr->hit(r, t_min, t_max, rec)) {
+            rec.normal = -rec.normal;
+            return true;
+        }
+        else
+            return false;
+    }
+    virtual bool bounding_box(float t0, float t1, aabb& box) const {
+        return ptr->bounding_box(t0, t1, box);
+    }
+    hitable *ptr;
+};
+```
+
+最后渲染出来的图片长这样：
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.48.27%20PM.png" width="250" height="250" alt=""/></div>
+
+### 注意
+
+开始的时候渲染出来一片黑，排查了很久，是color里面的tmin设置的问题，原来设置是0，源码中是0.001.
+
+当tmin设0的时候会导致，遍历hitlist时候，ray的t求解出来是0，hit的时候全走了else，导致递归到50层的时候，最后return的是0，* attenuation结果还是0。距离越远，散射用到random_in_unit_sphere生成的ray误差越大，就像上面的图一样。所以cornel 距离5，600的时候，场景中的lambert就全黑了。
+
+```C++
+    virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const  {
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+        scattered = ray(rec.p, target-rec.p, r_in.time());
+        attenuation = albedo->value(rec.u, rec.v, rec.p);
+        return true;
+    }
+```
+
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/bug.png" width="750" height="250" alt=""/></div>
+

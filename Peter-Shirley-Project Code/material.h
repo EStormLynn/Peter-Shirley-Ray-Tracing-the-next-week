@@ -12,13 +12,14 @@ struct hit_record;
 #include "hitable.h"
 #include "texture.h"
 
-
+// 反射系数求解的施莱克公式
 float schlick(float cosine, float ref_idx) {
     float r0 = (1-ref_idx) / (1+ref_idx);
     r0 = r0*r0;
     return r0 + (1-r0)*pow((1 - cosine),5);
 }
 
+// 折射
 bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
     vec3 uv = unit_vector(v);
     float dt = dot(uv, n);
@@ -31,7 +32,7 @@ bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
         return false;
 }
 
-
+// 反射
 vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n)*n;
 }
@@ -41,7 +42,7 @@ vec3 random_in_unit_sphere() {
     vec3 p;
     do {
         p = 2.0*vec3(drand48(),drand48(),drand48()) - vec3(1,1,1);
-    } while (p.squared_length() >= 1.0);
+    } while (dot(p,p) >= 1.0);
     return p;
 }
 
@@ -51,6 +52,9 @@ public:
     // 散射虚函数
     // 参数：r_in 入射的光线， rec hit的记录， attenuation v3的衰减，scattered 散射后的光线
     virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const = 0;
+    // 非自发光材质，默认返回黑色
+    virtual vec3 emitted(float u,float v,const vec3 &p)const {
+        return vec3(0,0,0);}
 };
 
 
@@ -59,8 +63,8 @@ public:
     lambertian(texture *a) : albedo(a) {}
     virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const  {
         vec3 target = rec.p + rec.normal + random_in_unit_sphere();
-        scattered = ray(rec.p, target-rec.p);
-        attenuation = albedo->value(rec.u,rec.v,rec.p);
+        scattered = ray(rec.p, target-rec.p, r_in.time());
+        attenuation = albedo->value(rec.u, rec.v, rec.p);
         return true;
     }
 
@@ -117,5 +121,24 @@ public:
 
     float ref_idx;
 };
+
+// 自发光材质
+class diffuse_light:public material {
+public:
+    diffuse_light(texture *a) : emit(a) {}
+
+    virtual bool scatter(const ray &r_in, const hit_record &rec, vec3 &attenuation, ray &scattered) const {
+        return false;
+    }
+
+    virtual vec3 emitted(float u, float v, const vec3 &p) const {
+        return emit->value(u, v, p);
+    }
+
+    texture *emit;
+};
+
+
+
 
 #endif //PETER_SHIRLEY_PROJECT_CODE_MATERIAL_H
