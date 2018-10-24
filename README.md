@@ -714,7 +714,7 @@ public:
 
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-232915.png" width="400" height="250" alt=""/></div>
 
-补充下Perlin oise的扩展阅读，[Building Up Perlin Noise](http://eastfarthing.com/blog/2015-04-21-noise/)
+补充下Perlin Noise的扩展阅读，[Building Up Perlin Noise](http://eastfarthing.com/blog/2015-04-21-noise/)
 
 ## Chapter5:Image Texture Mapping
 纹理映射，通过读取一张图片，使用uv映射的方法，直接将一张图片的纹理绘制在物体表面。
