@@ -16,6 +16,12 @@ ray.h
 hitable.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable.h
 
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/box.h
+aarect.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/aarect.h
+hitable_list.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable_list.h
+
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/camera.h
 ray.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/ray.h
@@ -37,6 +43,8 @@ iostream
 -
 sphere.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/sphere.h
+box.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/box.h
 hitable_list.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable_list.h
 float.h

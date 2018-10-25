@@ -86,6 +86,9 @@
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/aarect.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>
+		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/box.h">
+			<Option target="Peter_Shirley_Project_Code"/>
+		</Unit>
 		<Unit filename="/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/bvh.h">
 			<Option target="Peter_Shirley_Project_Code"/>
 		</Unit>

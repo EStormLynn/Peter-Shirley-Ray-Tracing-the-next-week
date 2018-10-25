@@ -3,6 +3,7 @@
 
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../aabb.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../aarect.h
+CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../box.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../camera.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../hitable.h
 CMakeFiles/Peter_Shirley_Project_Code.dir/main.cpp.o: ../hitable_list.h

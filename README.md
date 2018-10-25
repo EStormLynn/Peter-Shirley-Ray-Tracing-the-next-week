@@ -1045,3 +1045,187 @@ public:
 
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/bug.png" width="750" height="250" alt=""/></div>
 
+## Chapter7:Instances
+上一章渲染的结果是cornel box，但其实还不是完整的，完整版的在空间中还会有2个有轻微偏移的立方体。所以首先写一个box的类，用之前的rect来实现一个立方体，box类继承hitable，实现hit和bounding_box的虚方法。
+
+```c++
+class box: public hitable  {
+    public:
+        box() {}
+        box(const vec3& p0, const vec3& p1, material *ptr);
+        virtual bool hit(const ray& r, float t0, float t1, hit_record& rec) const;
+        virtual bool bounding_box(float t0, float t1, aabb& box) const {
+               box =  aabb(pmin, pmax);
+               return true; }
+        vec3 pmin, pmax;
+        hitable *list_ptr;
+};
+
+box::box(const vec3& p0, const vec3& p1, material *ptr) {
+    pmin = p0;
+    pmax = p1;
+    hitable **list = new hitable*[6];
+    list[0] = new xy_rect(p0.x(), p1.x(), p0.y(), p1.y(), p1.z(), ptr);
+    list[1] = new flip_normals(new xy_rect(p0.x(), p1.x(), p0.y(), p1.y(), p0.z(), ptr));
+    list[2] = new xz_rect(p0.x(), p1.x(), p0.z(), p1.z(), p1.y(), ptr);
+    list[3] = new flip_normals(new xz_rect(p0.x(), p1.x(), p0.z(), p1.z(), p0.y(), ptr));
+    list[4] = new yz_rect(p0.y(), p1.y(), p0.z(), p1.z(), p1.x(), ptr);
+    list[5] = new flip_normals(new yz_rect(p0.y(), p1.y(), p0.z(), p1.z(), p0.x(), ptr));
+    list_ptr = new hitable_list(list,6);
+}
+
+bool box::hit(const ray& r, float t0, float t1, hit_record& rec) const {
+    return list_ptr->hit(r, t0, t1, rec);
+}
+```
+
+新建2个box的对象
+
+```c++
+    list[i++] = new box(vec3(130,0,65),vec3(295,165,230),white);
+    list[i++] = new box(vec3(265,0,295),vec3(430,330,460),white);
+```
+
+渲染出来的图像如下
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box1.png" width="250" height="250" alt=""/></div>
+
+
+当前从侧面看的话，这2个box的关系如下：
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box2.png" width="250" height="250" alt=""/></div>
+
+但其实目前的做法和真正cornelbox中是不一样的，我们是在空间中摆放了2个不同位置的box，但其实第二个box是可以通过transform属性，通过第一个box来表示出来的，一般相同形状的模型都可以用instance的方法模拟出来。在hitable.h中实现，translate，继承hitable，同样实现hit和boundingbox的虚函数，这2个虚函数都用到了translate这个类中的一个成员变量vec3 的offset表示偏移量。
+
+```c++
+
+// 用于instance的移动
+class translate : public hitable {
+public:
+    translate(hitable *p, const vec3& displacement) : ptr(p), offset(displacement) {}
+    virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const;
+    virtual bool bounding_box(float t0, float t1, aabb& box) const;
+    hitable *ptr;
+    vec3 offset;    // vec3的偏移
+};
+
+bool translate::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
+    ray moved_r(r.origin() - offset, r.direction(), r.time());
+    if (ptr->hit(moved_r, t_min, t_max, rec)) {
+        rec.p += offset;
+        return true;
+    }
+    else
+        return false;
+}
+
+bool translate::bounding_box(float t0, float t1, aabb& box) const {
+    if (ptr->bounding_box(t0, t1, box)) {
+        box = aabb(box.min() + offset, box.max()+offset);
+        return true;
+    }
+    else
+        return false;
+}
+```
+
+这样就可以实现平移操作了，对于旋转，坐标点在三维空间中绕z轴旋转的示意图如下，z坐标保持不变，x，y坐标旋转，旋转角度为theta。
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box3.png" width="250" height="250" alt=""/></div>
+
+绕z轴旋转时，xy的坐标变化如下
+
+    x' = cos(theta) * x - sin(theta) * y
+    y' = sin(theta) * x + cos(theta) * y
+
+同理绕y轴旋转时，xz如下
+
+    x' = cos(theta) * x + sin(theta) * z
+    z' = -sin(theta) * x + cos(theta) * z
+
+绕x轴旋转，yz如下
+
+    y' = cos(theta) * y - sin(theta) * z
+    z' = sin(theta) * y + cos(theta) * z
+
+相比平移，旋转还需要考虑的一个问题就是，当面发生转动的时候，面的法向量也是会发生转动的，面法向量发生转动，散射的出射光线也会发生改变。实现rotate_y继承hitable，也是实现hit和bounding_box的虚函数，加入2个新的成员变量sin_theta和cos_theta用于角度计算。
+
+```c++
+class rotate_y : public hitable {
+public:
+    rotate_y(hitable *p, float angle);
+    virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const;
+    virtual bool bounding_box(float t0, float t1, aabb& box) const {
+        box = bbox; return hasbox;}
+    hitable *ptr;
+    float sin_theta;
+    float cos_theta;
+    bool hasbox;
+    aabb bbox;
+};
+```
+实现hit和rotate_y的构造函数
+```c++
+rotate_y::rotate_y(hitable *p, float angle) : ptr(p) {
+    float radians = (M_PI / 180.) * angle;
+    sin_theta = sin(radians);
+    cos_theta = cos(radians);
+    hasbox = ptr->bounding_box(0, 1, bbox);
+    vec3 min(FLT_MAX, FLT_MAX, FLT_MAX);
+    vec3 max(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            for (int k = 0; k < 2; k++) {
+                float x = i*bbox.max().x() + (1-i)*bbox.min().x();
+                float y = j*bbox.max().y() + (1-j)*bbox.min().y();
+                float z = k*bbox.max().z() + (1-k)*bbox.min().z();
+                float newx = cos_theta*x + sin_theta*z;
+                float newz = -sin_theta*x + cos_theta*z;
+                vec3 tester(newx, y, newz);
+                // 旋转之后重新计算bounding box
+                for ( int c = 0; c < 3; c++ )
+                {
+                    if ( tester[c] > max[c] )
+                        max[c] = tester[c];
+                    if ( tester[c] < min[c] )
+                        min[c] = tester[c];
+                }
+            }
+        }
+    }
+    bbox = aabb(min, max);
+}
+
+bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
+    vec3 origin = r.origin();
+    vec3 direction = r.direction();
+    origin[0] = cos_theta*r.origin()[0] - sin_theta*r.origin()[2];
+    origin[2] =  sin_theta*r.origin()[0] + cos_theta*r.origin()[2];
+    direction[0] = cos_theta*r.direction()[0] - sin_theta*r.direction()[2];
+    direction[2] = sin_theta*r.direction()[0] + cos_theta*r.direction()[2];
+    ray rotated_r(origin, direction, r.time());
+    if (ptr->hit(rotated_r, t_min, t_max, rec)) {
+        vec3 p = rec.p;
+        vec3 normal = rec.normal;
+        // normal 也做相应的旋转，因为是绕y轴，所以改p[0]和p[2]
+        p[0] = cos_theta*rec.p[0] + sin_theta*rec.p[2];
+        p[2] = -sin_theta*rec.p[0] + cos_theta*rec.p[2];
+        normal[0] = cos_theta*rec.normal[0] + sin_theta*rec.normal[2];
+        normal[2] = -sin_theta*rec.normal[0] + cos_theta*rec.normal[2];
+        rec.p = p;
+        rec.normal = normal;
+        return true;
+    }
+    else
+        return false;
+}
+```
+
+这时候就可以把main中的box引用上translate和roate了,**记得先旋转再平移**。
+```c++
+        list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130,0,65));
+        list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white),  15), vec3(265,0,295));
+```
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box4.png" width="250" height="250" alt=""/></div>
+
+## Chapter8:Volumes
+第八章是比较激动人心的一张，Volumes，常见的体渲染包括 烟、雾等
