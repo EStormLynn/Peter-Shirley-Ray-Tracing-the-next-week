@@ -26,6 +26,16 @@ hitable_list.h
 ray.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/ray.h
 
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/constant_medium.h
+hitable.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable.h
+texture.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/texture.h
+material.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/material.h
+float.h
+-
+
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/hitable.h
 ray.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/ray.h
@@ -63,6 +73,8 @@ stb_image_write.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/stb_image_write.h
 aarect.h
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/aarect.h
+constant_medium.h
+/Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/constant_medium.h
 
 /Users/SeeKHit/Project/Peter-Shirley-Ray-Tracing-the-next-week/Peter-Shirley-Project Code/material.h
 ray.h

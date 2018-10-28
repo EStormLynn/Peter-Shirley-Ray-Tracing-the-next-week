@@ -28,31 +28,47 @@
       <file leaf-file-name="material.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/material.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="169">
-              <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+            <state relative-caret-position="244">
+              <caret line="141" column="10" lean-forward="false" selection-start-line="141" selection-start-column="10" selection-end-line="141" selection-end-column="10" />
               <folding>
+                <element signature="e#157#173#0" expanded="true" />
                 <element signature="e#2312#3734#1" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="picture.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cmake-build-debug/picture.png">
-          <provider selected="true" editor-type-id="images">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="398">
-              <caret line="162" column="20" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
+            <state relative-caret-position="241">
+              <caret line="164" column="37" lean-forward="true" selection-start-line="164" selection-start-column="37" selection-end-line="164" selection-end-column="37" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
                 <element signature="e#275#297#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="constant_medium.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/constant_medium.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="480">
+              <caret line="49" column="1" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+              <folding>
+                <element signature="e#151#171#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bvh.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bvh.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="648">
+              <caret line="95" column="0" lean-forward="false" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -82,8 +98,8 @@
       <file leaf-file-name="hitable.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/hitable.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1137">
-              <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
+            <state relative-caret-position="-152">
+              <caret line="7" column="8" lean-forward="false" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -94,26 +110,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="236">
               <caret line="700" column="36" lean-forward="false" selection-start-line="700" selection-start-column="36" selection-end-line="700" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hitable_list.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/hitable_list.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="aarect.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/aarect.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="86" column="13" lean-forward="false" selection-start-line="86" selection-start-column="13" selection-end-line="86" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -167,11 +163,12 @@
         <option value="$PROJECT_DIR$/stb_image.h" />
         <option value="$PROJECT_DIR$/cmake-build-debug/aarect.h" />
         <option value="$PROJECT_DIR$/aarect.h" />
-        <option value="$PROJECT_DIR$/material.h" />
         <option value="$PROJECT_DIR$/surface_texture.h" />
         <option value="$PROJECT_DIR$/box.h" />
         <option value="$PROJECT_DIR$/hitable.h" />
+        <option value="$PROJECT_DIR$/material.h" />
         <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/constant_medium.h" />
       </list>
     </option>
   </component>
@@ -307,12 +304,12 @@
       <workItem from="1538323186125" duration="1491000" />
       <workItem from="1538325605624" duration="543000" />
       <workItem from="1538326401532" duration="31000" />
-      <workItem from="1538327251810" duration="43656000" />
+      <workItem from="1538327251810" duration="48456000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109996000" />
+    <option name="totallyTimeSpent" value="114796000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -367,7 +364,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>220</line>
+          <line>243</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -395,17 +392,6 @@
     <select />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="16" lean-forward="false" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-            <element signature="e#275#297#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cmake-build-debug/Makefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2470">
@@ -526,13 +512,6 @@
     <entry file="file:///Library/Developer/CommandLineTools/usr/include/c++/v1/ios" />
     <entry file="file://$PROJECT_DIR$/cmake-build-debug/Test.txt" />
     <entry file="file://$PROJECT_DIR$/Test.ppm" />
-    <entry file="file://$PROJECT_DIR$/bvh.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1805">
-          <caret line="95" column="0" lean-forward="false" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Developer/CommandLineTools/usr/include/c++/v1/iosfwd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1691">
@@ -736,21 +715,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cmake-build-debug/picture.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/material.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-          <folding>
-            <element signature="e#2312#3734#1" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/usr/include/math.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="236">
@@ -759,10 +723,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bvh.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="95" column="0" lean-forward="false" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/material.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="244">
+          <caret line="141" column="10" lean-forward="false" selection-start-line="141" selection-start-column="10" selection-end-line="141" selection-end-column="10" />
+          <folding>
+            <element signature="e#157#173#0" expanded="true" />
+            <element signature="e#2312#3734#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/hitable.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1137">
-          <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
+        <state relative-caret-position="-152">
+          <caret line="7" column="8" lean-forward="false" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -772,13 +755,28 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/cmake-build-debug/picture.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398">
-          <caret line="162" column="20" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="238" selection-end-column="0" />
+        <state relative-caret-position="241">
+          <caret line="164" column="37" lean-forward="true" selection-start-line="164" selection-start-column="37" selection-end-line="164" selection-end-column="37" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
             <element signature="e#275#297#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/constant_medium.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="49" column="1" lean-forward="false" selection-start-line="12" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding>
+            <element signature="e#151#171#0" expanded="true" />
           </folding>
         </state>
       </provider>

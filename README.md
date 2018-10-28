@@ -16,7 +16,7 @@
 - [x] Chapter4:Perlin Noise
 - [x] Chapter5:Image Texture Mapping
 - [x] Chapter6:Rectangles and Lights
-- [ ] Chapter7:Instances
+- [x] Chapter7:Instances
 - [ ] Chapter8:Volumes
 - [ ] Chapter9:A Scene Test All New Features
 
@@ -1228,4 +1228,79 @@ bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box4.png" width="250" height="250" alt=""/></div>
 
 ## Chapter8:Volumes
-第八章是比较激动人心的一张，Volumes，常见的体渲染包括 烟、雾等
+
+第八章是比较激动人心的一张，Volumes，常见的体渲染包括 烟、雾等。volumes的另一个特性是，可以在内部发生散射，就像光线会在稠密的雾中发生散射一样。体渲染通常的做法是，在体的内部，放很多随机性的面，来实现散射的效果。比如一束烟可以表示为，在这束烟的内部任意point位置，都可以存在一个面，面的集合实现了烟的物理效果(感觉翻译的不好，大概就是这个意思0.0)。
+
+对于一个常量密度的volume，一条ray通过其中的时候，在volume中传播的时候也会发生散射，光线在volume中能传播多远，也是由volume的密度决定的，密度越高，传播的效率越低，光线传播的距离也越短。
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/volume1.png" width="400" height="250" alt=""/></div>
+
+当光线穿过volume的时候，volume中的任意位置都可以发生散射，
+
+    probability = C * dL
+
+这里的C是一个volume的系数，表示这个volume视觉上的浓密程度，dL是任意可以发生散射的一小段距离。对于一个Constant volume，我们只需要调节 密度 C和Boundary包围盒。这里再写一个constant_medium继承hitable。
+在材质里面添加各向异性的材质
+```c++
+// 各向异性材质
+class isotropic : public material {
+public:
+    isotropic(texture *a) : albedo(a) {}
+    virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const  {
+        scattered = ray(rec.p, random_in_unit_sphere());
+        attenuation = albedo->value(rec.u, rec.v, rec.p);
+        return true;
+    }
+    texture *albedo;
+};
+```
+
+```c++
+// 体，恒量介质
+class constant_medium : public hitable  {
+public:
+    constant_medium(hitable *b, float d, texture *a) : boundary(b), density(d) { phase_function = new isotropic(a); }
+    virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const;
+    virtual bool bounding_box(float t0, float t1, aabb& box) const {
+        return boundary->bounding_box(t0, t1, box); }
+    hitable *boundary;
+    float density;
+    // 材质为各项异性的材质
+    material *phase_function;
+};
+
+bool constant_medium::hit(const ray &r, float t_min, float t_max, hit_record &rec) const {
+    hit_record rec1, rec2;
+    if (boundary->hit(r, -FLT_MAX, FLT_MAX, rec1)) {
+        if (boundary->hit(r, rec1.t+0.0001, FLT_MAX, rec2)) {
+            if (rec1.t < t_min)
+                rec1.t = t_min;
+            if (rec2.t > t_max)
+                rec2.t = t_max;
+            if (rec1.t >= rec2.t)
+                return false;
+            if (rec1.t < 0)
+                rec1.t = 0;
+            float distance_inside_boundary = (rec2.t - rec1.t)*r.direction().length();
+            float hit_distance = -(1/density)*log(drand48());
+            if (hit_distance < distance_inside_boundary) {
+                rec.t = rec1.t + hit_distance / r.direction().length();
+                rec.p = r.point_at_parameter(rec.t);
+                rec.normal = vec3(1,0,0);  // arbitrary
+                rec.mat_ptr = phase_function;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+```
+
+使用main中的cornell_smoke 渲染出来的场景如下：
+
+<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/volume2.png" width="250" height="250" alt=""/></div>
+
+## Chapter9:A Scene Testing All New Features
+
+
