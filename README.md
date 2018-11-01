@@ -17,7 +17,7 @@
 - [x] Chapter5:Image Texture Mapping
 - [x] Chapter6:Rectangles and Lights
 - [x] Chapter7:Instances
-- [ ] Chapter8:Volumes
+- [x] Chapter8:Volumes
 - [ ] Chapter9:A Scene Test All New Features
 
 ## Chapter1:Motion Blur
@@ -1302,5 +1302,5 @@ bool constant_medium::hit(const ray &r, float t_min, float t_max, hit_record &re
 <div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/volume2.png" width="250" height="250" alt=""/></div>
 
 ## Chapter9:A Scene Testing All New Features
-
+最后一张是渲染运用第二本书上的知识点，渲染出一张和封面一样的图片。
 
