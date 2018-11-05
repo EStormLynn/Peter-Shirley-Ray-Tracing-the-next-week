@@ -5,7 +5,8 @@
 
 [英文原著地址](https://pan.baidu.com/s/1b5CvAdElCcXAO2R4lNFgkA)  密码: urji
 
-第二本书主要介绍了运动模糊，BVH（层次包围盒），纹理贴图，柏林噪声等
+第二本书主要介绍了运动模糊，BVH（层次包围盒），纹理贴图，柏林噪声，纹理映射，光照，instance，volumes，最后会渲染一张封面上的图片。
+
 
 因为机器计算能力问题，代码渲染的图片分辨率较小，放在The-Next-Week文件夹下，图片使用的是原书的图片。
 
@@ -18,7 +19,7 @@
 - [x] Chapter6:Rectangles and Lights
 - [x] Chapter7:Instances
 - [x] Chapter8:Volumes
-- [ ] Chapter9:A Scene Test All New Features
+- [x] Chapter9:A Scene Test All New Features
 
 ## Chapter1:Motion Blur
 运动模糊。当你在进行ray tracing的时候，模糊反射和散焦模糊的过程中，每个像素你需要采样多个点，来决定最终像素的颜色，这种效果在现实世界中是另外一种实现方法，现实世界中，相机通过控制快门的开和关，记录下快门开闭时间内，物体运动的轨迹，通过这样的方法实现模糊的效果。
@@ -747,8 +748,12 @@ theta值在(-Pi/2,Pi/2)之间。
 
 最终就在hit 文件中写了一个获取球体uv的函数
 ```c++
-
-
+void get_sphere_uv(const vec3& p, float& u, float& v) {
+    float phi = atan2(p.z(), p.x());
+    float theta = asin(p.y());
+    u = 1-(phi + M_PI) / (2*M_PI);
+    v = (theta + M_PI/2) / M_PI;
+}
 
 ```
 
@@ -1304,3 +1309,51 @@ bool constant_medium::hit(const ray &r, float t_min, float t_max, hit_record &re
 ## Chapter9:A Scene Testing All New Features
 最后一张是渲染运用第二本书上的知识点，渲染出一张和封面一样的图片。
 
+我渲染的场景和原书略有不同，参数如下：
+
+分辨率1000x1000 sample 100
+
+```c++
+hitable *final() {
+    int nb = 10;
+    hitable **list = new hitable*[3000];
+    material *white = new lambertian( new constant_texture(vec3(0.73, 0.73, 0.73)) );
+    material *ground = new lambertian( new constant_texture(vec3(0.48, 0.83, 0.53)) );
+    int b = 0;
+    int l = 0;
+    for (int i = 0; i < nb; i++) {
+        for (int j = 0; j < nb; j++) {
+            float w = 100;
+            float x0 = i*w;
+            float z0 = j*w;
+            float y0 = 0;
+            float x1 = x0 + w;
+            float y1 = 100*(drand48()+0.01);
+            float z1 = z0 + w;
+            cout << "("<<x0<<","<<y0<<","<<z0<<") ("<<x1<<","<<y1<<","<<z1<<")"<<endl;
+            list[l++] = new box(vec3(x0, y0, z0), vec3(x1, y1, z1), ground);
+        }
+    }
+    material *light = new diffuse_light( new constant_texture(vec3(7, 7, 7)) );
+    list[l++] = new xz_rect(123, 423, 147, 412, 554, light);
+    vec3 center(400, 400, 200);
+    list[l++] = new moving_sphere(center, center+vec3(30, 0, 0), 0, 1, 50,
+                                  new lambertian(new constant_texture(vec3(0.7, 0.3, 0.1))));
+    list[l++] = new sphere(vec3(260, 150, 45), 50, new dielectric(1.5));
+    list[l++] = new sphere(vec3(0, 150, 145), 50, new metal(vec3(0.8, 0.8, 0.9), 10.0));
+    hitable *boundary = new sphere(vec3(360, 150, 145), 70, new dielectric(1.5));
+    list[l++] = boundary;
+    list[l++] = new constant_medium(boundary, 0.2, new constant_texture(vec3(0.2, 0.4, 0.9)));
+    boundary = new sphere(vec3(0, 0, 0), 5000, new dielectric(1.5));
+    list[l++] = new constant_medium(boundary, 0.0001, new constant_texture(vec3(1.0, 1.0, 1.0)));
+    texture *pertext = new noise_texture(0.1);
+    list[l++] =  new sphere(vec3(220,280, 300), 80, new lambertian( pertext ));
+    int ns = 1000;
+    for (int j = 0; j < ns; j++) {
+        list[l++] = new sphere(vec3(165*drand48()-100, 165*drand48()+270, 165*drand48()+395),10 , white);
+    }
+    cout<< "len(l) = " << l << endl;
+    return new hitable_list(list,l);
+}
+```
+<div align=center><img src="http://phpe57ub5.bkt.clouddn.com/final.png" width="500" height="500" alt=""/></div>

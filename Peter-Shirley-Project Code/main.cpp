@@ -188,10 +188,8 @@ hitable *cornell_smoke()
 }
 
 hitable *final() {
-    int nb = 5;
+    int nb = 10;
     hitable **list = new hitable*[3000];
-    hitable **boxlist = new hitable*[10000];
-    hitable **boxlist2 = new hitable*[10000];
     material *white = new lambertian( new constant_texture(vec3(0.73, 0.73, 0.73)) );
     material *ground = new lambertian( new constant_texture(vec3(0.48, 0.83, 0.53)) );
     int b = 0;
@@ -206,7 +204,7 @@ hitable *final() {
             float y1 = 100*(drand48()+0.01);
             float z1 = z0 + w;
             cout << "("<<x0<<","<<y0<<","<<z0<<") ("<<x1<<","<<y1<<","<<z1<<")"<<endl;
-//            list[l++] = new box(vec3(x0, y0, z0), vec3(x1, y1, z1), ground);
+            list[l++] = new box(vec3(x0, y0, z0), vec3(x1, y1, z1), ground);
         }
     }
     material *light = new diffuse_light( new constant_texture(vec3(7, 7, 7)) );
@@ -221,18 +219,12 @@ hitable *final() {
     list[l++] = new constant_medium(boundary, 0.2, new constant_texture(vec3(0.2, 0.4, 0.9)));
     boundary = new sphere(vec3(0, 0, 0), 5000, new dielectric(1.5));
     list[l++] = new constant_medium(boundary, 0.0001, new constant_texture(vec3(1.0, 1.0, 1.0)));
-    int nx, ny, nn;
-//    unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
-//    material *emat =  new lambertian(new image_texture(tex_data, nx, ny));
-//    list[l++] = new sphere(vec3(400,200, 400), 100, emat);
     texture *pertext = new noise_texture(0.1);
     list[l++] =  new sphere(vec3(220,280, 300), 80, new lambertian( pertext ));
-    int ns = 500;
+    int ns = 1000;
     for (int j = 0; j < ns; j++) {
         list[l++] = new sphere(vec3(165*drand48()-100, 165*drand48()+270, 165*drand48()+395),10 , white);
-//        boxlist2[j] = new sphere(vec3(165*drand48(), 165*drand48(), 165*drand48()), 10, white);
     }
-//    list[l++] =   new translate(new rotate_y(new bvh_node(boxlist2,ns, 0.0, 1.0), 15), vec3(-100,270,395));
     cout<< "len(l) = " << l << endl;
     return new hitable_list(list,l);
 }
@@ -253,13 +245,13 @@ int main() {
 
     string str = "";
 
-    int nx = 200;
-    int ny = 200;
+    int nx = 1000;
+    int ny = 1000;
     // 采样数量ns
     int ns = 100;
 /*-----------------------------------------*/
 //     cornell box view
-    vec3 lookfrom(278, 278, -800);
+    vec3 lookfrom(228, 278, -800);
     vec3 lookat(278, 278, 0);
     float dist_to_focus = 10.0;
     float aperture = 0.0;
@@ -336,6 +328,7 @@ int main() {
             str += s;
         }
         OutFile << str;
+        cout<< "lllll: " << j <<"/1000"<<endl;
     }
 
     OutFile.close();            //关闭Test.txt文件
