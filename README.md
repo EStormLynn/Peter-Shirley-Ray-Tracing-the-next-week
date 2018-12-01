@@ -198,7 +198,7 @@ camera类的get_ray函数返回了一条随机时间t在t0和t1之间时间点�
 最后渲染出来达到的效果如下：
 
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-08-31%20at%201.50.45%20AM.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-b30936cbb030e8d4f6c802600a3353ed_hd.jpg" width="400" height="250" alt=""/></div>
 
 ## Chapter2:Bounding Volume Hierarchies
 层次包围盒
@@ -219,7 +219,7 @@ else
 
 还有个关键的点是，如何划分物体形成子集。实际上我们不是直接划分屏幕活着volume的，每个物体都有一个bounding volume，而且bounding volume可以重叠。建立一个bounding volume的层级关系。举个例子，我们将物体的总集分为红蓝2个子集，分别用一个bounding volume包围起来，就有了下面的这张图：
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-01%20at%202.40.34%20PM.png" width="400" height="200" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-43caea06dc9853eb3a4306bcf5b75b35_hd.jpg" width="400" height="200" alt=""/></div>
 
 红色和蓝色都在紫色的包围盒内，他们发生了重叠，就有了右边的树型结构，红蓝分别是紫的左右孩子，伪代码如下：
 ```C++
@@ -237,7 +237,7 @@ else
 很多人用一种叫“slab”的方法，这是一种基于n个纬度的AABB，就是从n个轴上取n个区间表示。**3<x<5** , x in （3，5）这样表示更加简洁。
 2D的时候，x,y2个区间可以现成一个矩形。
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-10%20at%201.44.06%20AM.png" width="400" height="200" alt=""/></div>
+<div align=center><img src="https://pic4.zhimg.com/80/v2-a26d6d50bd342d2dd08918a2e7260353_hd.jpg" width="400" height="200" alt=""/></div>
 
 
 如果判断一条光线是否射中一个区间，须要先判断光线是否击中分界线。在2d平面内，边界是2条线，而这条ray有2个参数t0和t1，就可以在平面内确定一条光线；如果是在3d空间，边界是2个面，假设为x=x0和x=x1（这是x方向上的2个面），对于时刻t，有个关于p(t)的函数
@@ -269,7 +269,7 @@ else
     return overlap?((tx0,tx1),(ty0,ty1))
 ```
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-10%20at%2012.45.42%20AM.png" width="400" height="200" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-308a575c8cfe3c205f3de2eca05f24e9_hd.jpg" width="400" height="200" alt=""/></div>
 
 三维的时候就再加上z空间的判断。
 
@@ -498,7 +498,7 @@ public:
 最后得到的图案就是把底部大球的纹理，改成了棋盘纹理，效果如下：
 
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-13%20at%202.53.23%20AM.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic3.zhimg.com/80/v2-37459e508dc948e14558b10523743a46_hd.jpg" width="400" height="250" alt=""/></div>
 
 ## Chapter4:Perlin Noise
 Perlin噪声 ( Perlin noise )指由Ken Perlin发明的自然噪声生成算法 。
@@ -592,7 +592,7 @@ hitable *two_perlin_spheres()
 ```
 
 得到的效果如下
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-27%20at%201.23.55%20AM.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic4.zhimg.com/80/v2-40f79599b70aa4ee269fcad9ec8e9e87_hd.jpg" width="400" height="250" alt=""/></div>
 
 再使纹理变得平滑一些，使用线性插值的方法：
 ```c++
@@ -611,7 +611,7 @@ inline float trilinear_interp(float cp[2][2][2], float u, float v, float w) {
 ```
 
 效果如下：
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-09-27%20at%201.24.06%20AM.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-8dcbeaba4eac960c8127b439ea53251d_hd.jpg" width="400" height="250" alt=""/></div>
 
 为了达到更好的平滑效果，使用**hermite cubic**方法去做平滑。
 
@@ -630,7 +630,7 @@ inline float trilinear_interp(float cp[2][2][2], float u, float v, float w) {
 ```
 
 效果如下：
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-233120.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic4.zhimg.com/80/v2-917692607e22c4d148f2d0ba1b2c1bcb_hd.jpg" width="400" height="250" alt=""/></div>
 
 同时缩放输入的点p来使噪声变化的更快。
 
@@ -650,7 +650,7 @@ public:
 
 得到的效果如下：
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-233135.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic3.zhimg.com/80/v2-f080b86dd0e904ce8dd6f1fc1fc030ba_hd.jpg" width="400" height="250" alt=""/></div>
 
 现在仍然能看到网格，因为这种模式下，max和min总是收到具体的xyz值影响，然后Ken就用了一个trick，使用随机的vectors替代原来的floats，通过点乘的方法改变格子上的max和min值。
 
@@ -713,7 +713,7 @@ public:
 
 最终达到的效果如下
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/QQ20181008-232915.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-ba1691381402fd20dfa67206e3ddf611_hd.jpg" width="400" height="250" alt=""/></div>
 
 补充下Perlin Noise的扩展阅读，[Building Up Perlin Noise](http://eastfarthing.com/blog/2015-04-21-noise/)
 
@@ -826,7 +826,7 @@ public:
 以xy平面为例，在z=k的情况下，用2条直线，满足x=x0,x=x1,y=y0,y=y1可以得到一个区域。
 
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.54.25%20PM.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic4.zhimg.com/80/v2-788fc41bec5410b5318fbcbe5474ee37_hd.jpg" width="400" height="250" alt=""/></div>
 
 
 当判断ray是否击中这个rectangle的时候，ray的表达式为：
@@ -905,7 +905,7 @@ hitable *simple_light()
 
 得到如下的图片
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.37.40%20PM.png" width="400" height="200" alt=""/></div>
+<div align=center><img src="https://pic3.zhimg.com/80/v2-154da9e82040b43d225b63a28f1283f6_hd.jpg" width="400" height="200" alt=""/></div>
 
 接下来补全yz平面和xz平面的代码
 ```c++
@@ -1004,7 +1004,7 @@ camera的参数做一些调整
 ```
 
 会发现渲染出来的有几个面是黑色的，是因为法向量的问题。
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.48.34%20PM.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic3.zhimg.com/80/v2-230e5cc2724c1e27c7d4f1d2022beb96_hd.jpg" width="250" height="250" alt=""/></div>
 
 
 须要翻转法向量
@@ -1030,7 +1030,7 @@ public:
 
 最后渲染出来的图片长这样：
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/Screen%20Shot%202018-10-15%20at%2011.48.27%20PM.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic1.zhimg.com/80/v2-2e4847406616bdf1b88f2537c0e31fa4_hd.jpg" width="250" height="250" alt=""/></div>
 
 ### 注意
 
@@ -1048,7 +1048,7 @@ public:
 ```
 
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/bug.png" width="750" height="250" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-4d05ef5f667690d21aa7160b6c8a11e9_hd.jpg" width="750" height="250" alt=""/></div>
 
 ## Chapter7:Instances
 上一章渲染的结果是cornel box，但其实还不是完整的，完整版的在空间中还会有2个有轻微偏移的立方体。所以首先写一个box的类，用之前的rect来实现一个立方体，box类继承hitable，实现hit和bounding_box的虚方法。
@@ -1092,12 +1092,12 @@ bool box::hit(const ray& r, float t0, float t1, hit_record& rec) const {
 ```
 
 渲染出来的图像如下
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box1.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic4.zhimg.com/80/v2-747f21efa4de71e68f45dcad663d70e3_hd.jpg" width="250" height="250" alt=""/></div>
 
 
 当前从侧面看的话，这2个box的关系如下：
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box2.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic1.zhimg.com/80/v2-c745d1c9edfb240a3293666a4b031790_hd.jpg" width="250" height="250" alt=""/></div>
 
 但其实目前的做法和真正cornelbox中是不一样的，我们是在空间中摆放了2个不同位置的box，但其实第二个box是可以通过transform属性，通过第一个box来表示出来的，一般相同形状的模型都可以用instance的方法模拟出来。在hitable.h中实现，translate，继承hitable，同样实现hit和boundingbox的虚函数，这2个虚函数都用到了translate这个类中的一个成员变量vec3 的offset表示偏移量。
 
@@ -1135,7 +1135,7 @@ bool translate::bounding_box(float t0, float t1, aabb& box) const {
 
 这样就可以实现平移操作了，对于旋转，坐标点在三维空间中绕z轴旋转的示意图如下，z坐标保持不变，x，y坐标旋转，旋转角度为theta。
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box3.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic1.zhimg.com/80/v2-72fae3a355859660cdf42881b335d30c_hd.jpg" width="250" height="250" alt=""/></div>
 
 绕z轴旋转时，xy的坐标变化如下
 
@@ -1230,7 +1230,7 @@ bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
         list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130,0,65));
         list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white),  15), vec3(265,0,295));
 ```
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/box4.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic3.zhimg.com/80/v2-ad532f60087010acf258bec76855fe02_hd.jpg" width="250" height="250" alt=""/></div>
 
 ## Chapter8:Volumes
 
@@ -1238,7 +1238,7 @@ bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) cons
 
 对于一个常量密度的volume，一条ray通过其中的时候，在volume中传播的时候也会发生散射，光线在volume中能传播多远，也是由volume的密度决定的，密度越高，传播的效率越低，光线传播的距离也越短。
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/volume1.png" width="400" height="250" alt=""/></div>
+<div align=center><img src="https://pic4.zhimg.com/80/v2-0ed526f17900f24f3c6c88edb4200913_hd.jpg" width="400" height="250" alt=""/></div>
 
 当光线穿过volume的时候，volume中的任意位置都可以发生散射，
 
@@ -1304,7 +1304,7 @@ bool constant_medium::hit(const ray &r, float t_min, float t_max, hit_record &re
 
 使用main中的cornell_smoke 渲染出来的场景如下：
 
-<div align=center><img src="http://oo8jzybo8.bkt.clouddn.com/volume2.png" width="250" height="250" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-8867123a3d104e0dfac2e62796d81c79_hd.jpg" width="250" height="250" alt=""/></div>
 
 ## Chapter9:A Scene Testing All New Features
 最后一张是渲染运用第二本书上的知识点，渲染出一张和封面一样的图片。
@@ -1356,4 +1356,4 @@ hitable *final() {
     return new hitable_list(list,l);
 }
 ```
-<div align=center><img src="http://phpe57ub5.bkt.clouddn.com/final.png" width="500" height="500" alt=""/></div>
+<div align=center><img src="https://pic2.zhimg.com/80/v2-4be921d21537a75e6df7a3b4ffa83041_hd.jpg" width="500" height="500" alt=""/></div>
